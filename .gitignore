@@ -131,8 +131,5 @@ dmypy.json
 # .idea
 .idea
 
-#  workflow
-.github
-
 #  docs
 docs
