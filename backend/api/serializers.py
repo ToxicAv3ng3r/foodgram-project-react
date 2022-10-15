@@ -207,7 +207,8 @@ class RecipeWriteSerializer(ModelSerializer):
                 'tags': 'Нужно выбрать хотя бы один тег!'
             })
         tags_set = set(tags)
-
+        for tag in tags:
+            logging.info(f'{type(tag)}')
         if len(tags) != len(tags_set):
             raise ValidationError({
                 'tags': 'Теги должны быть уникальными!'
