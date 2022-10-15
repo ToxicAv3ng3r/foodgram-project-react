@@ -13,7 +13,6 @@ from drf_extra_fields.fields import Base64ImageField
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from users.models import Subscribe
 
-import logging
 
 User = get_user_model()
 
@@ -200,16 +199,16 @@ class RecipeWriteSerializer(ModelSerializer):
 
     def validate_tags(self, value):
         tags = value
-        logging.basicConfig(filename="logs.log", level=logging.INFO)
-        logging.info(f'{tags}')
         if not tags:
             raise ValidationError({
                 'tags': 'Нужно выбрать хотя бы один тег!'
             })
         tags_set = set(tags)
         for tag in tags:
-            logging.info(f'{type(tag)}!!!!!!')
-            logging.info(f'{tag.name}')
+            if not Tag.objects.filter(id=tag.id).exists():
+                raise ValidationError({
+                    'tags': 'Нессуществующий тэг'
+                })
         if len(tags) != len(tags_set):
             raise ValidationError({
                 'tags': 'Теги должны быть уникальными!'
