@@ -59,6 +59,11 @@ class SubscribeSerializer(CustomUserSerializer):
     def validate(self, data):
         author = self.instance
         user = self.context.get('request').user
+        if not User.objects.filter(id=user['id']).exists():
+            raise ValidationError(
+                detail='Вы пытаетесь подписаться на несуществующего пользователя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
         if Subscribe.objects.filter(author=author, user=user).exists():
             raise ValidationError(
                 detail='Вы уже подписаны на этого пользователя!',
@@ -183,7 +188,13 @@ class RecipeWriteSerializer(ModelSerializer):
                 raise ValidationError({
                     'ingredients': 'Ингридиенты не могут повторяться!'
                 })
-            if int(item['amount']) <= 0:
+            try:
+                int(item['amount'])
+            except Exception:
+                raise ValidationError(
+                    {'amount': 'Количество должно быть числом!'}
+                )
+            if int(item['amount']) < 0:
                 raise ValidationError({
                     'amount': 'Количество ингредиента должно быть больше 0!'
                 })
@@ -196,11 +207,15 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError({
                 'tags': 'Нужно выбрать хотя бы один тег!'
             })
-        tags_set = set(tags)
+        tags_set = set()
+        for item in tags:
+            tag = get_object_or_404(Tag, id=item['id'])
+            tags_set.add(tag)
         if len(tags) != len(tags_set):
             raise ValidationError({
                 'tags': 'Теги должны быть уникальными!'
             })
+
         return value
 
     def create_ingredients_amounts(self, ingredients, recipe):

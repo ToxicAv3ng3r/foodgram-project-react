@@ -55,7 +55,7 @@ class Recipe(models.Model):
         null=True,
         verbose_name='Автор',
     )
-    text = models.TextField('Описание')
+    text = models.TextField('Описание', max_length=3000)
     image = models.ImageField(
         'Изображение',
         upload_to='recipes/'
