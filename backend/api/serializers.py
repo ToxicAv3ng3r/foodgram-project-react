@@ -205,7 +205,10 @@ class RecipeWriteSerializer(ModelSerializer):
         tags_set = set(tags)
         for item in tags:
             tag = get_object_or_404(Tag, id=item)
-            print(tag)
+            if not tag:
+                raise ValidationError({
+                    'tags': f'{tag} отсутствует'
+                })
 
         if len(tags) != len(tags_set):
             raise ValidationError({
