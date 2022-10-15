@@ -61,7 +61,7 @@ class SubscribeSerializer(CustomUserSerializer):
         user = self.context.get('request').user
         if not User.objects.filter(id=user['id']).exists():
             raise ValidationError(
-                detail='Вы пытаетесь подписаться на несуществующего пользователя!',
+                detail='Вы подписываетесь на несуществующего пользователя!',
                 code=status.HTTP_400_BAD_REQUEST
             )
         if Subscribe.objects.filter(author=author, user=user).exists():
