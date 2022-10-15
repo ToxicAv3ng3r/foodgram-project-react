@@ -208,6 +208,7 @@ class RecipeWriteSerializer(ModelSerializer):
             })
         tags_set = set(tags)
         for tag in tags:
+            logging.info(f'{tag}')
             logging.info(f'{type(tag)}')
             logging.info(f'{tag.name}')
         if len(tags) != len(tags_set):
