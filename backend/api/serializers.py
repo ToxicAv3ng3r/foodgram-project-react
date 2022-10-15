@@ -189,7 +189,7 @@ class RecipeWriteSerializer(ModelSerializer):
                 raise ValidationError(
                     {'amount': 'Количество должно быть числом!'}
                 )
-            if int(item['amount']) <= 0:
+            if int(item['amount']) < 0:
                 raise ValidationError({
                     'amount': 'Количество ингредиента должно быть больше 0!'
                 })
@@ -202,7 +202,10 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError({
                 'tags': 'Нужно выбрать хотя бы один тег!'
             })
-        tags_set = set(tags)
+        tags_set = set()
+        for item in tags:
+            tag = get_object_or_404(Tag, id=item['id'])
+            tags_set.add(tag)
         if len(tags) != len(tags_set):
             raise ValidationError({
                 'tags': 'Теги должны быть уникальными!'
