@@ -202,11 +202,11 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError({
                 'tags': 'Нужно выбрать хотя бы один тег!'
             })
-        tags_lst = []
+        tags_set = set()
         for item in tags:
             tag = get_object_or_404(Tag, id=item)
-            tags_set.append(tag)
-        if len(tags) != len(set(tags_lst)):
+            tags_set.add(tag)
+        if len(tags) != len(tags_set):
             raise ValidationError({
                 'tags': 'Теги должны быть уникальными!'
             })
