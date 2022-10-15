@@ -204,7 +204,7 @@ class RecipeWriteSerializer(ModelSerializer):
             })
         tags_set = set()
         for item in tags:
-            tag = get_object_or_404(Tag, id=item)
+            tag = item
             tags_set.add(tag)
         if len(tags) != len(tags_set):
             raise ValidationError({
